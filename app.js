@@ -47,8 +47,8 @@ let showCalendar = () => {
 }
 showCalendar();
 
-let showMonth = ()=>{
-  currenTitle.innerHTML=`${monthList[first.getMonth()]} ${first.getFullYear()}`
+let showMonth = () => {
+  currenTitle.innerHTML = `${monthList[first.getMonth()]} ${first.getFullYear()}`
 }
 showMonth();
 
@@ -61,6 +61,18 @@ let removeCalendar = () => {
     catchTr++;
   }
 }
+
+let btn = () => {
+  el('.btn-wrap').addEventListener('click', e => {
+    if(e.target.id=='prev') {
+      console.log("되니?");
+    }else if(e.target.id=='next'){
+      console.log("이거도?");
+    }
+  })
+}
+btn()
+
 
 // let prev = () => {
 //   inputBox.value = '';
