@@ -1,3 +1,16 @@
+/***************************************
+날짜 관련 함수 정리(공부한거 까먹으면 아깝자나....ㅜ)
+getFullYear() : 연도 반환
+getMonth() : 월 반환 1월-12월 -> 0-11 (해당하는 월을 출력하고 싶을때 getMonth()+1로 해줌)
+getDay() : sunday-saturday -> 0-6
+getDate() : 일 반환
+***************************************/
+/**
+todolist
+1. 날짜 클릭 -> 색 바뀌기, 날짜, 요일 바뀌기
+2. todolist 만들기
+**/
+
 let el = selector => document.querySelector(selector);
 let elAll = selector => document.querySelectorAll(selector);
 let dom = selector => document.createElement(selector)
@@ -13,20 +26,25 @@ let notLeapYear = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 let pageFirst = first;
 let pageYear;
 
+//윤달
 if (first.getFullYear() % 4 === 0) {
   pageYear = leapYear
 } else {
   pageYear = notLeapYear
 }
 
+//캘린더 그리기
 let showCalendar = () => {
   let monthCnt = 100;
   let cnt = 1;
 
-  for (let i = 0; i < 6; i++) {
-    let $tr = dom('tr')
+  for (let i = 0; i < 6; i++) { //주 단위
+    let $tr = dom('tr');
     $tr.setAttribute('id', monthCnt);
-    for (let j = 0; j < 7; j++) {
+    monthCnt++;
+
+    for (let j = 0; j < 7; j++) { //요일 단위
+      //빈칸을 만드려면 빈칸에 해당하는 조건을 만드는게 당연하지!!
       //시작요소 : 첫번째 주라면 시작하는 요일부터 날짜를 출력하기 위한 설정 
       //마지막요소 : 월마다 총 일수가 다르기 때문에 pageYear에 월마다 일수를 넣음. 비교하면서 출력
       if ((i === 0 && j < first.getDay()) || cnt > pageYear[first.getMonth()]) {
@@ -41,16 +59,14 @@ let showCalendar = () => {
         cnt++;
       }
     }
-    monthCnt++;
     calendarBody.appendChild($tr);
   }
 }
-showCalendar();
 
+//월 출력
 let showMonth = () => {
   currenTitle.innerHTML = `${monthList[first.getMonth()]} ${first.getFullYear()}`
 }
-showMonth();
 
 //달력 업데이트
 let removeCalendar = () => {
@@ -62,107 +78,78 @@ let removeCalendar = () => {
   }
 }
 
-let btn = () => {
+//이전, 다음 월 계산
+let calendarCal = e => {
+  today = new Date(today.getFullYear(), today.getMonth() - e, today.getDate());
+  if (pageFirst.getMonth() === 1) {
+    pageFirst = new Date(first.getFullYear() - e, 12, 1);
+
+  } else {
+    pageFirst = new Date(first.getFullYear(), first.getMonth() - e, 1);
+    first = pageFirst;
+  }
+}
+
+let btnEvt = () => {
   el('.btn-wrap').addEventListener('click', e => {
-    if(e.target.id=='prev') {
-      console.log("되니?");
-    }else if(e.target.id=='next'){
-      console.log("이거도?");
+    if (e.target.id == 'prev') {
+      calendarCal(1)
+      showMonth();
+      removeCalendar();
+      showCalendar();
+
+    } else if (e.target.id == 'next') {
+      calendarCal(-1)
+      showMonth();
+      removeCalendar();
+      showCalendar();
     }
   })
 }
-btn()
 
+//오늘 날짜 출력
+let showMain = () => {
+  let mainTodayDay = el('.main-day');
+  let mainTodayDate = el('.main-date');
+  mainTodayDay.innerHTML = dayList[today.getDay()];
+  mainTodayDate.innerHTML = today.getDate();
 
-// let prev = () => {
-//   inputBox.value = '';
-//   const $divs = elAll('#input-list > div');
-//   $divs.forEach(e => {
-//     e.remove();
-//   });
-//   const $btns = elAll('#input-list > button');
-//   $btns.forEach(e1 => {
-//     e1.remove();
-//   });
-//   if (pageFirst.getMonth() === 1) {
-//     pageFirst = new Date(first.getFullYear() - 1, 12, 1);
-//     first = pageFirst;
-//     if (first.getFullYear() % 4 === 0) {
-//       pageYear = leapYear
-//     } else {
-//       pageYear = notLeapYear
-//     }
-//   } else {
-//     pageFirst = new Date(first.getFullYear(), first.getMonth() - 1, 1);
-//     first = pageFirst
-//   }
-//   today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()) //수상
-//   currenTitle.innerHTML = `${monthList[first.getMonth()]} ${first.getFullYear()}`
-//   removeCalendar();
-//   showCalendar();
-//   showMain();
-//   clickedDate1 = dom('#today.getDate()');
-//   clickedDate1.classList.add('active');
-//   clickStart();
-//   reshowingList();
+  let todayDate = document.getElementById(today.getDate());
+  todayDate.classList.add('active');
+  todayDate.style.color = 'red'
+
+}
+
+//날짜 클릭 -> 그 날짜, 요일 출력 =>보류
+// let clickToday = e => {
+//   let group=document.getElementById(pageYear[first.getMonth()])
+//   console.log(group);
 // }
+// clickToday();
 
-// let next = () => {
-//   inputBox = '';
-//   const $divs = elAll('#input-list > div');
-//   $divs.forEach(e => {
-//     e.remove();
-//   });
-//   const $btns = elAll('#input-list > button');
-//   $btns.forEach(e1 => {
-//     e1.remove();
-//   });
-//   if (pageFirst.getMonth() === 12) {
-//     pageFirst = new Date(first.getFullYear() + 1, 1, 1);
-//     first = pageFirst;
-//     if (first.getFullYear() % 4 === 0) {
-//       pageYear = leapYear;
-//     } else {
-//       pageYear = notLeapYear;
-//     }
-//   } else {
-//     pageFirst = new Date(first.getFullYear(), first.getMonth() + 1, 1);
-//     first = pageFirst;
-//   }
-//   today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate()) //수상
-//   currenTitle.innerHTML = `${monthList[first.getMonth()]} ${first.getFullYear()}`
-//   removeCalendar();
-//   showCalendar();
-//   showMain();
-//   clickedDate1 = el('#today.getDate()');
-//   clickedDate1.classList.add('active');
-//   clickStart();
-//   reshowingList();
-// }
+let addList = () => { //엔터도 동작하고싶어여
+  el('.input-data').addEventListener('click', () => {
+    if (el('.input-box').value.length == 0) {
+      alert('Please enter a task');
+    } else {
+      el('.input-list ul').innerHTML +=
+        `<li>${el('.input-box').value} <button class="delText">X</button></li>`
+    }
+    el('.input-box').value = '';
+  })
+}
 
-// let showMain = () => {
-//   mainTodayDay.innerHTML = dayList[today.getDay()];
-//   mainTodayDay.innerHTML = today.getDay();
-// }
+let delEvt = () => {
+  el('.delText').addEventListener('click', ()=>{
+    el('.list li').remove()
+  })
+}
 
-// let clickedDate1 = document.getElementById(today.getDate());
-// clickedDate1.classList.add('active');
-// let prevBtn = el('#prev');
-// let nextBtn = el('#next');
-// prevBtn.addEventListener('click', prev);
-// nextBtn.addEventListener('click', next);
-
-// let tdGroup = [];
-// let clickStart = () => {
-//   for (let i = 1; i <= pageYear[first.getMonth()]; i++) {
-//     if(tdGroup[i].classList.contains('actvie')){
-//       tdGroup[i].classList.remove('active');
-//     }
-//   }
-//   clickedDate1.e.currenTarget;
-//   clickedDate1.classList.add('active');
-//   today=new Date(today.getFullYear(), today.getMonth(), clickedDate1.id);
-//   showMain();
-//   keyValue=`${today.getFullYear()} ${today.getMonth()} ${today.getDate()}`;
-//   reshowingList();
-// }
+let init = () => {
+  showCalendar();
+  showMonth();
+  btnEvt();
+  showMain();
+  addList();
+}
+init();
