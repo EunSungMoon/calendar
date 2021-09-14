@@ -16,51 +16,38 @@
           <div id="main-day" class="main-day"></div>
           <div id="main-date" class="main-date"></div>
         </div>
-        <div class="todo-wrap">
-          <div class="todo-title">Todo List</div>
-          <div class="input-wrap">
-            <form onsubmit="return false">
-              <input type="text" placeholder="please write here!!" id="input-box" class="input-box"></input>
-              <button type="submit" id="input-data" class="input-data">INPUT</button>
-            </form>
-            <div id="input-list" class="input-list">
-              <ul class="list">
-
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="content-right">
-        <table id="calendar">
-          <thead>
-            <tr class="btn-wrap clearfix">
-              <td>
-                <label id="prev">
-                  &#60;
-                </label>
-              </td>
-              <td id="current-year-month" colspan="5"></td>
-              <td>
-                <label id="next">
-                  &#62;
-                </label>
-              </td>
-            </tr>
-            <tr>
-              <td class="sun">Sun</td>
-              <td>Mon</td>
-              <td>Tue</td>
-              <td>Wed</td>
-              <td>Thu</td>
-              <td>Fri</td>
-              <td class="sat">Sat</td>
-            </tr>
-          </thead>
-          <tbody id="calendar-body" class="calendar-body"></tbody>
-        </table>
       </div>
     </div>
+    <div class="content-right">
+      <table id="calendar">
+        <thead>
+          <tr class="btn-wrap clearfix">
+            <td>
+              <label id="prev">
+                &#60;
+              </label>
+            </td>
+            <td id="current-year-month" colspan="5"></td>
+            <td>
+              <label id="next">
+                &#62;
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td class="sun">Sun</td>
+            <td>Mon</td>
+            <td>Tue</td>
+            <td>Wed</td>
+            <td>Thu</td>
+            <td>Fri</td>
+            <td class="sat">Sat</td>
+          </tr>
+        </thead>
+        <tbody id="calendar-body" class="calendar-body"></tbody>
+      </table>
+    </div>
+  </div>
   </div>
 </body>
 <script src="app.js"></script>

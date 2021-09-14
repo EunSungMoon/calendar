@@ -46,6 +46,9 @@ let leapYear = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 let notLeapYear = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 let pageFirst = first;
 let pageYear;
+let tdGroup = [];
+let mainTodayDay = el('.main-day');
+let mainTodayDate = el('.main-date');
 
 //윤달
 if (first.getFullYear() % 4 === 0) {
@@ -108,55 +111,24 @@ let calendarCal = e => {
 
 }
 
-//이전, 다음 월 이동 버튼
-let btnEvt = () => {
-  el('.btn-wrap').addEventListener('click', e => {
-    if (e.target.id == 'prev') {
-      removeCalendar();
-      calendarCal(1)
-      showMonth();
-      showCalendar();
-      showMain();
-
-    } else if (e.target.id == 'next') {
-      removeCalendar();
-      calendarCal(-1)
-      showMonth();
-      showCalendar();
-      showMain();
-    }
-  })
-}
-
 //오늘 날짜 출력
-let showMain = () => {
-  let mainTodayDay = el('.main-day');
-  let mainTodayDate = el('.main-date');
-  mainTodayDay.innerHTML = dayList[today.getDay()];
-  mainTodayDate.innerHTML = today.getDate();
+let showMain = e => {
+  mainTodayDay.innerHTML = dayList[e.getDay()];
+  mainTodayDate.innerHTML = e.getDate();
 
-  let todayDate = document.getElementById(today.getDate());
+  let todayDate = document.getElementById(e.getDate());
   addActive(todayDate);
 }
 
-//날짜 클릭 -> 그 날짜, 요일 출력 =>다음이 안되네
-let clickToday = () => {
-  el('.calendar-body').addEventListener('click', e => {
-    let todaySel = document.getElementById(today.getDate());
-
-    if (e.target.id) {
-      removeActive(todaySel);
-      addActive(e.target);
-    }
-  })
+let changeDate = (date, day) => {
+  mainTodayDate.innerHTML = `${date}` // 날짜
+  mainTodayDay.innerHTML = `${day}` //요일
 }
 
 //active class 삭제 
 let removeActive = e => {
-  if (e.className == 'active') {
-    e.classList.remove('active');
-    e.style.color = '';
-  }
+  e.classList.remove('active');
+  e.style.color = '';
 }
 
 //active class 추가
@@ -165,27 +137,49 @@ let addActive = e => {
   e.style.color = 'red';
 }
 
-//todolist 추가
-let addList = () => {
-  let $inputBox = el('.input-box');
-  if ($inputBox.value.length == 0) {
-    alert('Please enter a task');
-  } else {
-    el('.input-list ul').innerHTML +=
-      `<li>${$inputBox.value} <button class="delText">X</button></li>`
+//날짜 클릭 시 이벤트
+let changeToday = e => {
+  for (let i = 1; i <= pageYear[first.getMonth()]; i++) {
+    if (tdGroup[i].classList == 'active') {
+      let clickedDate = e.target;
+      let today1 = new Date(today.getFullYear(), today.getMonth(), clickedDate.id);
+
+      removeActive(tdGroup[i]);
+      addActive(clickedDate);
+      changeDate(clickedDate.innerHTML, dayList[today1.getDay()]);
+      // console.log(dayList[today1.getDay()]);
+    }
   }
-  $inputBox.value = '';
 }
 
-//todolist 추가 이벤트 함수
-let addListFunc = () => {
-  el('.input-data').addEventListener('click', addList);
+//클릭 함수
+let clickDate = () => {
+  for (let i = 1; i <= pageYear[first.getMonth()]; i++) {
+    tdGroup[i] = document.getElementById(i);
+    tdGroup[i].addEventListener('click', changeToday);
+  }
 }
 
-//list 삭제 
-let delEvt = () => {
-  el('.list').addEventListener('click', e => {
-    e.target.className ? e.target.parentNode.remove() : '';
+//이전, 다음 월 이동 버튼
+let btnEvt = () => {
+  el('.btn-wrap').addEventListener('click', e => {
+
+    if (e.target.id == 'prev') {
+      removeCalendar();
+      calendarCal(1)
+      showMonth();
+      showCalendar();
+      showMain(today);
+      clickDate();
+
+    } else if (e.target.id == 'next') {
+      removeCalendar();
+      calendarCal(-1)
+      showMonth();
+      showCalendar();
+      showMain(today);
+      clickDate();
+    }
   })
 }
 
@@ -193,9 +187,7 @@ let init = () => {
   showCalendar();
   showMonth();
   btnEvt();
-  showMain();
-  addListFunc();
-  delEvt();
-  clickToday();
+  showMain(today);
+  clickDate();
 }
 init();
