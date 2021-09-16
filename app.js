@@ -191,3 +191,52 @@ let init = () => {
   clickDate();
 }
 init();
+
+let createMemoApp = () => {
+  let $memoWrap = el('.memoWrap');
+  let memoDom = `
+    <div class = "title">
+      <h1>Notes App</h1>
+      <span>Take notes and never forget.</span>
+    </div>
+
+    <div class = "search">
+    <select name = "sorting">
+        <option value = "last">sort by last edited</option>
+        <option value = "recent">sort by recently created</option>
+        <option value = "abc">sort by ABC</option>
+      </select>
+      <input id = "searchBox" placeholder = "Search">
+      <button class = "searchBtn">Search</button>
+    </div>
+    <div class = "memoList"></div>
+    <div class = "footer"></div>
+  `
+  $memoWrap.innerHTML = memoDom;
+}
+
+let createMemoList = () => {
+  let $memoList = el('.memoList');
+  let list = `
+    <div class = "listWrap">
+      <div class = "listTitle">title</div>
+      <span>내용</span>
+    </div>
+  `
+  $memoList.innerHTML += list;
+}
+
+let createBtn = role => {
+  let $footer = el('.footer');
+  let btn = `
+    <button class = "${role}">${role}</button>
+  `
+  $footer.innerHTML = btn
+}
+
+let memoInit = () => {
+  createMemoApp();
+  createMemoList();
+  createBtn('Create_Note');
+}
+memoInit();
