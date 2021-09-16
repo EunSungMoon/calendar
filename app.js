@@ -55,7 +55,7 @@ if (first.getFullYear() % 4 === 0) {
   pageYear = leapYear
 } else {
   pageYear = notLeapYear
-}
+};
 
 //캘린더 그리기
 let showCalendar = () => {
@@ -86,12 +86,12 @@ let showCalendar = () => {
     }
     calendarBody.appendChild($tr);
   }
-}
+};
 
 //월 출력
 let showMonth = () => {
   currenTitle.innerHTML = `${monthList[first.getMonth()]} ${first.getFullYear()}`
-}
+};
 
 //달력 업데이트
 let removeCalendar = () => {
@@ -101,7 +101,7 @@ let removeCalendar = () => {
     $tr.remove();
     catchTr++;
   }
-}
+};
 
 //이전, 다음 월 계산
 let calendarCal = e => {
@@ -109,7 +109,7 @@ let calendarCal = e => {
   pageFirst = new Date(first.getFullYear(), first.getMonth() - e, 1);
   first = pageFirst;
 
-}
+};
 
 //오늘 날짜 출력
 let showMain = e => {
@@ -118,24 +118,24 @@ let showMain = e => {
 
   let todayDate = document.getElementById(e.getDate());
   addActive(todayDate);
-}
+};
 
 let changeDate = (date, day) => {
   mainTodayDate.innerHTML = `${date}` // 날짜
   mainTodayDay.innerHTML = `${day}` //요일
-}
+};
 
 //active class 삭제 
 let removeActive = e => {
   e.classList.remove('active');
   e.style.color = '';
-}
+};
 
 //active class 추가
 let addActive = e => {
   e.classList.add('active');
   e.style.color = 'red';
-}
+};
 
 //날짜 클릭 시 이벤트
 let changeToday = e => {
@@ -150,7 +150,7 @@ let changeToday = e => {
       // console.log(dayList[today1.getDay()]);
     }
   }
-}
+};
 
 //클릭 함수
 let clickDate = () => {
@@ -158,7 +158,7 @@ let clickDate = () => {
     tdGroup[i] = document.getElementById(i);
     tdGroup[i].addEventListener('click', changeToday);
   }
-}
+};
 
 //이전, 다음 월 이동 버튼
 let btnEvt = () => {
@@ -181,7 +181,7 @@ let btnEvt = () => {
       clickDate();
     }
   })
-}
+};
 
 let init = () => {
   showCalendar();
@@ -192,7 +192,7 @@ let init = () => {
 }
 init();
 
-let createMemoApp = () => {
+let createNoteApp = () => {
   let $memoWrap = el('.memoWrap');
   let memoDom = `
     <div class = "title">
@@ -200,22 +200,25 @@ let createMemoApp = () => {
       <span>Take notes and never forget.</span>
     </div>
 
-    <div class = "search">
-    <select name = "sorting">
-        <option value = "last">sort by last edited</option>
-        <option value = "recent">sort by recently created</option>
-        <option value = "abc">sort by ABC</option>
-      </select>
-      <input id = "searchBox" placeholder = "Search">
-      <button class = "searchBtn">Search</button>
+    <div class = "listWrap">
+      <div class = "search">
+        <select name = "sorting">
+            <option value = "last">sort by last edited</option>
+            <option value = "recent">sort by recently created</option>
+            <option value = "abc">sort by ABC</option>
+        </select>
+        <input class = "searchBox" placeholder = "Search">
+        <button class = "searchBtn">Search</button>
+      </div>
+      <div class = "memoList"></div>
     </div>
-    <div class = "memoList"></div>
+    <div class = "newNoteWrap"></div>
     <div class = "footer"></div>
   `
   $memoWrap.innerHTML = memoDom;
-}
+};
 
-let createMemoList = () => {
+let createNoteList = () => {
   let $memoList = el('.memoList');
   let list = `
     <div class = "listWrap">
@@ -224,7 +227,7 @@ let createMemoList = () => {
     </div>
   `
   $memoList.innerHTML += list;
-}
+};
 
 let createBtn = role => {
   let $footer = el('.footer');
@@ -232,11 +235,36 @@ let createBtn = role => {
     <button class = "${role}">${role}</button>
   `
   $footer.innerHTML = btn
+};
+
+let createNoteBtn = () => {
+  let btnDom = el('.Create_Note');
+  btnDom.addEventListener('click', () => {
+    el('.listWrap').style.display = 'none';
+    el('.Create_Note').style.display = 'none';
+    newNoteLoad();
+  })
+};
+
+let newNote = () => {
+  let $newNoteWrap = el('.newNoteWrap');
+  let newNoteDom = `
+    <button class = "removeBtn">Remove Note</button>
+    <input class = "noteTitle" placeholder = "Title">
+    <textarea style = "display: flex; width: 400px; height: 100px" placeholder = "write the memo"></textarea>
+  `
+  $newNoteWrap.innerHTML=newNoteDom;
 }
 
 let memoInit = () => {
-  createMemoApp();
-  createMemoList();
+  createNoteApp();
+  createNoteList();
   createBtn('Create_Note');
+  createNoteBtn();
 }
 memoInit();
+
+let newNoteLoad = () => {
+  newNote();
+  createBtn('Done');
+}
