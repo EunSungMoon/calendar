@@ -8,7 +8,6 @@ getDate() : 일 반환
 버튼 타입 3가지 : submit, button, reset
 submit : 타입 명시가 없다면 기본 타입. form 테그로 버튼이 감싸져있을 경우 
         버튼 클릭 시 새로고침 됨 => onsubmit ="return false" 해주면 해결
-
         **마크업 측면에서 버튼의 기능을 명시해주는 것이 좋다
 button : 클릭해도 기능없음. 기능함수를 만들면 기능을 실행하기 위한 대상의 역할
 reset : 버튼을 감싸고 있는 form 데이터의 입력된 데이터를 초기화
@@ -18,10 +17,9 @@ todolist
 1. 날짜 클릭 -> 색 바뀌기, 날짜, 요일 바뀌기, 다른 날짜 선택 시 이전선택 날짜 글씨 색 바꾸기
 2. for문 foreach로 바꾸기
 3. 메모장 만들기
-  - 메모
   - 날짜, 시간 출력
-  - todolist 기능 삭제
-  - 메모 데이터를 json형태로 저장, 받아오기 
+  - 메모 데이터를 json형태로 저장, 받아오기
+  -  
 4. 스케줄러 만들기
   - 날짜 클릭 -> 스케줄러 화면 나오기
   - 제목 입력
@@ -29,7 +27,6 @@ todolist
   - 하루종일
   - 반복(매년, 매월)
 5. 디데이 만들어볼까?
-
 **/
 
 let el = selector => document.querySelector(selector);
@@ -183,6 +180,7 @@ let btnEvt = () => {
   })
 };
 
+//달력 초기화면
 let init = () => {
   showCalendar();
   showMonth();
@@ -192,79 +190,134 @@ let init = () => {
 }
 init();
 
-let createNoteApp = () => {
-  let $memoWrap = el('.memoWrap');
-  let memoDom = `
+//노트 앱 첫 화면 그리기
+let NoteAppDom = () => {
+  let $noteWrap = el('.noteWrap');
+  let noteDom = `
     <div class = "title">
       <h1>Notes App</h1>
       <span>Take notes and never forget.</span>
     </div>
 
-    <div class = "listWrap">
+    <div class = "noteContent">
       <div class = "search">
         <select name = "sorting">
-            <option value = "last">sort by last edited</option>
-            <option value = "recent">sort by recently created</option>
-            <option value = "abc">sort by ABC</option>
+          <option value = "last">sort by last edited</option>
+          <option value = "recent">sort by recently created</option>
+          <option value = "abc">sort by ABC</option>
         </select>
-        <input class = "searchBox" placeholder = "Search">
+        <input id = "searchBox" placeholder = "Search">
         <button class = "searchBtn">Search</button>
       </div>
-      <div class = "memoList"></div>
+      <div class = "noteList"></div>
+      <button class = "CreateNoteBtn">Create Note</button>
     </div>
+
     <div class = "newNoteWrap"></div>
-    <div class = "footer"></div>
   `
-  $memoWrap.innerHTML = memoDom;
+  $noteWrap.innerHTML = noteDom;
 };
 
-let createNoteList = () => {
-  let $memoList = el('.memoList');
+//노트 리스트 화면 그리기
+let NoteListDom = () => {
+  let $noteList = el('.noteList');
   let list = `
     <div class = "listWrap">
       <div class = "listTitle">title</div>
-      <span>내용</span>
+      <span class = "listText">내용</span>
     </div>
   `
-  $memoList.innerHTML += list;
+  $noteList.innerHTML += list;
 };
 
-let createBtn = role => {
-  let $footer = el('.footer');
-  let btn = `
-    <button class = "${role}">${role}</button>
-  `
-  $footer.innerHTML = btn
+let displayEl = (elClass, displayEvt) => {
+  el(elClass).style.display = displayEvt
 };
 
-let createNoteBtn = () => {
-  let btnDom = el('.Create_Note');
-  btnDom.addEventListener('click', () => {
-    el('.listWrap').style.display = 'none';
-    el('.Create_Note').style.display = 'none';
-    newNoteLoad();
+//변수명 기억 안남...망함... 다시 해야되!!
+//새노트 만들기 버튼 이벤트
+let createNoteBtnEvt = () => {
+  let $createNote = el('.CreateNoteBtn');
+
+  $createNote.addEventListener('click', () => {
+    loadNote();
+    displayEl('.noteContent', 'none');
+    displayEl('.CreateNoteBtn', 'none');
+    displayEl('.newNoteWrap', '');
   })
 };
 
-let newNote = () => {
-  let $newNoteWrap = el('.newNoteWrap');
+//새 노트 만드는 화면 그리기
+let writeNewNote = () => {
+  let $newNote = el('.newNoteWrap');
   let newNoteDom = `
-    <button class = "removeBtn">Remove Note</button>
-    <input class = "noteTitle" placeholder = "Title">
-    <textarea style = "display: flex; width: 400px; height: 100px" placeholder = "write the memo"></textarea>
+    <div class = "newNoteContent">
+      <input type="text" class = "noteTitle" placeholder = "title">
+      <button class= "save">Save</button>
+      <button class= "back">Back</button>
+      <textarea class = "noteText" placeholder = "write the note" style = "width: 400px; height: 100px; display: flex"></textarea>
+      <button class = "removeNoteBtn">Remove Memo</button>
+    </div>
   `
-  $newNoteWrap.innerHTML=newNoteDom;
+  $newNote.innerHTML = newNoteDom;
+};
+
+//뒤로가기 버튼 이벤트 
+let backBtnEvt = () => {
+  let $back = el('.back');
+
+  $back.addEventListener('click', () => {
+    displayEl('.noteContent', '');
+    displayEl('.CreateNoteBtn', '');
+    displayEl('.newNoteWrap', 'none');
+  })
+};
+
+//저장 -> json으로 변환? -> localstorage에 저장
+//저장된 데이터는 리스트에 출력해주기
+let saveBtnEvt = d => {
+  let $save = el('.save');
+
+  $save.addEventListener('click', e => {
+    e.preventDefault();
+
+    if ((el('.noteTitle').value.length == 0) || el('.noteText').value.length == 0) {
+      alert("note를 작성하거라");
+    }
+    else {
+      alert("저장됨");
+    }
+  })
+};
+
+//삭제버튼 이벤트
+let removeBtnEvt = () => {
+  let $removeNoteBtn = el('.removeNoteBtn');
+  $removeNoteBtn.addEventListener('click', e => {
+
+    if ((el('.noteTitle').value.length == 0) && el('.noteText').value.length == 0) {
+      console.log("note를 작성하거라");
+    }
+    else {
+      confirm("진짜로 지울꺼냐?");
+      //true or false switch문을 사용해서 해볼까나
+    }
+
+  })
 }
 
-let memoInit = () => {
-  createNoteApp();
-  createNoteList();
-  createBtn('Create_Note');
-  createNoteBtn();
-}
-memoInit();
+//노트 첫 화면
+let noteInit = () => {
+  NoteAppDom();
+  NoteListDom();
+  createNoteBtnEvt();
+};
+noteInit();
 
-let newNoteLoad = () => {
-  newNote();
-  createBtn('Done');
-}
+//새 노트 작성 화면 로딩
+let loadNote = () => {
+  writeNewNote();
+  backBtnEvt();
+  saveBtnEvt();
+  removeBtnEvt();
+};
