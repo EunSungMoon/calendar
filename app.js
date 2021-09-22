@@ -234,7 +234,6 @@ let displayEl = (elClass, displayEvt) => {
   el(elClass).style.display = displayEvt
 };
 
-//변수명 기억 안남...망함... 다시 해야되!!
 //새노트 만들기 버튼 이벤트
 let createNoteBtnEvt = () => {
   let $createNote = el('.CreateNoteBtn');
@@ -316,7 +315,7 @@ let removeBtnEvt = () => {
       }
     }
   })
-}
+};
 
 //노트 로컬 저장해보자
 let noteData = () => {
@@ -326,8 +325,7 @@ let noteData = () => {
     console.log($noteTitle.value);
     console.log($noteText.value);
   })
-
-}
+};
 
 //노트 첫 화면
 let noteInit = () => {
