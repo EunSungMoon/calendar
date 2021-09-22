@@ -252,11 +252,13 @@ let writeNewNote = () => {
   let $newNote = el('.newNoteWrap');
   let newNoteDom = `
     <div class = "newNoteContent">
-      <input type="text" class = "noteTitle" placeholder = "title">
+      <form class = "inputForm">
+        <input type="text" class = "noteTitle" placeholder = "title">
+      </form>
       <button class= "save">Save</button>
       <button class= "back">Back</button>
       <textarea class = "noteText" placeholder = "write the note" style = "width: 400px; height: 100px; display: flex"></textarea>
-      <button class = "removeNoteBtn">Remove Memo</button>
+      <button class = "removeNoteBtn">Remove Note</button>
     </div>
   `
   $newNote.innerHTML = newNoteDom;
@@ -293,17 +295,35 @@ let saveBtnEvt = d => {
 //삭제버튼 이벤트
 let removeBtnEvt = () => {
   let $removeNoteBtn = el('.removeNoteBtn');
+  
   $removeNoteBtn.addEventListener('click', e => {
 
     if ((el('.noteTitle').value.length == 0) && el('.noteText').value.length == 0) {
       console.log("note를 작성하거라");
     }
     else {
-      confirm("진짜로 지울꺼냐?");
+      let $confirm = confirm("진짜로 지울꺼냐?");
+      switch ($confirm) {
+        case true: console.log("지움");
+        break;
+        case false: console.log("안지움");
+        break;
+      }
+
       //true or false switch문을 사용해서 해볼까나
     }
 
   })
+}
+
+let noteData = () => {
+  let $noteTitle = el('.noteTitle');
+  let $noteText = el('.noteText');
+  el('.save').addEventListener('click', () => {
+    console.log($noteTitle.value);
+    console.log($noteText.value);
+  })
+
 }
 
 //노트 첫 화면
@@ -317,6 +337,7 @@ noteInit();
 //새 노트 작성 화면 로딩
 let loadNote = () => {
   writeNewNote();
+  noteData();
   backBtnEvt();
   saveBtnEvt();
   removeBtnEvt();
