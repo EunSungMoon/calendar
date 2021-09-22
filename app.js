@@ -287,7 +287,13 @@ let saveBtnEvt = d => {
       alert("note를 작성하거라");
     }
     else {
-      alert("저장됨");
+      let $confirmSave=confirm("진짜로 저장?");
+      switch($confirmSave) {
+        case true: console.log("저장완료");
+        break;
+        case false: console.log("저장안됨");
+        break;
+      }
     }
   })
 };
@@ -295,27 +301,24 @@ let saveBtnEvt = d => {
 //삭제버튼 이벤트
 let removeBtnEvt = () => {
   let $removeNoteBtn = el('.removeNoteBtn');
-  
   $removeNoteBtn.addEventListener('click', e => {
 
     if ((el('.noteTitle').value.length == 0) && el('.noteText').value.length == 0) {
       console.log("note를 작성하거라");
     }
     else {
-      let $confirm = confirm("진짜로 지울꺼냐?");
-      switch ($confirm) {
+      let $confirmRemove = confirm("진짜로 지울꺼냐?");
+      switch ($confirmRemove) {
         case true: console.log("지움");
         break;
         case false: console.log("안지움");
         break;
       }
-
-      //true or false switch문을 사용해서 해볼까나
     }
-
   })
 }
 
+//노트 로컬 저장해보자
 let noteData = () => {
   let $noteTitle = el('.noteTitle');
   let $noteText = el('.noteText');
