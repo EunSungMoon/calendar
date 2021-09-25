@@ -198,7 +198,6 @@ let NoteAppDom = () => {
       <h1>Notes App</h1>
       <span>Take notes and never forget.</span>
     </div>
-
     <div class = "noteContent">
       <div class = "search">
         <select name = "sorting">
@@ -212,7 +211,6 @@ let NoteAppDom = () => {
       <div class = "noteList"></div>
       <button class = "CreateNoteBtn">Create Note</button>
     </div>
-
     <div class = "newNoteWrap"></div>
   `
   $noteWrap.innerHTML = noteDom;
@@ -230,8 +228,8 @@ let NoteListDom = () => {
   $noteList.innerHTML += list;
 };
 
-let displayEl = (elClass, displayEvt) => {
-  el(elClass).style.display = displayEvt
+let displayEl = (elClassName, displayEvt) => {
+  el(elClassName).style.display = displayEvt
 };
 
 //새노트 만들기 버튼 이벤트
@@ -276,22 +274,24 @@ let backBtnEvt = () => {
 
 //저장 -> json으로 변환? -> localstorage에 저장
 //저장된 데이터는 리스트에 출력해주기
+//저장 후 데이터 지우고 싶은데 배열값도 같이 지워지네... 그럼 안되지
 let saveBtnEvt = d => {
   let $save = el('.save');
 
   $save.addEventListener('click', e => {
     e.preventDefault();
-
+    noteData();
+   
     if ((el('.noteTitle').value.length == 0) || el('.noteText').value.length == 0) {
       alert("note를 작성하거라");
     }
     else {
-      let $confirmSave=confirm("진짜로 저장?");
-      switch($confirmSave) {
+      let $confirmSave = confirm("진짜로 저장?");
+      switch ($confirmSave) {
         case true: console.log("저장완료");
-        break;
+          break;
         case false: console.log("저장안됨");
-        break;
+          break;
       }
     }
   })
@@ -309,22 +309,31 @@ let removeBtnEvt = () => {
       let $confirmRemove = confirm("진짜로 지울꺼냐?");
       switch ($confirmRemove) {
         case true: console.log("지움");
-        break;
+          break;
         case false: console.log("안지움");
-        break;
+          break;
       }
     }
   })
 };
 
 //노트 로컬 저장해보자
+//제목, 내용 각각 배열에 push해줌 -> json으로 변환 -> localstorage에 저장
+//고민... 제목과 내용을 각각 배열에 넣어서 json으로 변환, 가져오는 과정이 괜찮을까...? 더 좋은 방법은 없는걸까?
+//각각 배열을 객체로 만들어보자 key=title, value=text로
 let noteData = () => {
   let $noteTitle = el('.noteTitle');
   let $noteText = el('.noteText');
-  el('.save').addEventListener('click', () => {
-    console.log($noteTitle.value);
-    console.log($noteText.value);
-  })
+  let noteTitleArray = [];
+  let noteTextArray = [];
+
+    noteTitleArray.push($noteTitle.value);
+    noteTextArray.push($noteText.value);
+    let noteTitleJson=JSON.stringify(noteTitleArray);
+    let noteTextJson=JSON.stringify(noteTextArray);
+
+    console.log(noteTitleJson);
+    console.log(noteTextJson);
 };
 
 //노트 첫 화면
@@ -338,7 +347,6 @@ noteInit();
 //새 노트 작성 화면 로딩
 let loadNote = () => {
   writeNewNote();
-  noteData();
   backBtnEvt();
   saveBtnEvt();
   removeBtnEvt();
