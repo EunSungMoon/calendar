@@ -72,84 +72,90 @@ let writeNewNote = () => {
   $newNote.innerHTML = newNoteDom;
 };
 
-// //뒤로가기 버튼 이벤트 
-// let backBtnEvt = () => {
-//   let $back = el('.back');
-
-//   $back.addEventListener('click', function () {
-
-//     displayEl('.noteContent', '');
-//     displayEl('.CreateNoteBtn', '');
-//     displayEl('.newNoteWrap', 'none');
-
-//     if ((el('.noteTitle').value.length) || el('.noteText').value.length) {
-//       console.log("메모가 있다구!!");
-//       let confirmRemove = confirm("저장하고 뒤로갈래?");
-//       switch (confirmRemove) {
-//         case true:
-//           localstorageObj.savenNoteData();
-//           localstorageObj.showNoteData();
-//           console.log("저장했다");
-//           //로컬에 저장하고 뒤로
-//           break;
-//         case false: console.log("지웠다 ");
-//           //걍 뒤로
-//           break;
-//       }
-//     }
-//   })
-// };
-
-// //저장버튼 이벤트
-// let saveBtnEvt = d => {
-//   let $save = el('.save');
-
-//   $save.addEventListener('click', function (e) {
-//     e.preventDefault();
-
-//     if ((el('.noteTitle').value.length == 0) || el('.noteText').value.length == 0) {
-//       alert("note를 작성하거라");
-//     }
-//     else {
-//       let $confirmSave = confirm("진짜로 저장?");
-//       switch ($confirmSave) {
-//         case true:
-//           // localstorageObj.savenNoteData();
-//           // localstorageObj.showNoteData();
-//           console.log('저장완료');
-//           break;
-//         case false: console.log("저장안됨");
-//           break;
-//       }
-//     }
-//   })
-// };
-
 // //저장, 뒤로가기 버튼 이벤트 한번에
-let btnAllEvt = () => {
+let buttonEvent = () => {
   let buttons = elAll('.btn');
 
   for (const button of buttons) {
     button.addEventListener('click', function (e) {
-      if ((el('.noteTitle').value.length) || el('.noteText').value.length) {
+      if ((el('.noteTitle').value.length) && el('.noteText').value.length) {
         console.log("데이터 o");
-        switch (buttons.elClassName) {
-          case 'save': console.log("save");
-          case 'back': console.log("back");
+        switch (button.className == 'save btn') {
+          case true:
+            condition.memoExistFunc()
+            break;
+          case false: console.log("back");
+            condition.memoExistFunc()
+            break;
         }
       } else {
         console.log("데이터 x");
+        switch (button.className == 'save btn') {
+          case true:
+            condition.saveNoMemoExist();
+            console.log("save");
+            break;
+          case false:
+            condition.backNoMemoExist()
+            console.log("back");
+            break;
+        }
       }
     })
   }
 }
 
+//버튼 이벤트 조건
+let condition = {
+  //메모가 적혀있을때 조건
+  memoExistFunc() {
+    let memoExist = confirm('저장할래?');
+    switch (memoExist) {
+      case true:
+        localstorageObj.saveNoteData();
+        // localstorageObj.showNoteData();
+        // displayEl('.noteContent', '');
+        // displayEl('.CreateNoteBtn', '');
+        // displayEl('.newNoteWrap', 'none');
+
+        alert("저장됨");
+        console.log("저장됨");
+
+        break;
+      case false:
+        alert("저장 취소");
+        console.log("저장 취소");
+        break;
+    }
+  },
+
+  //메모가 없고 save눌렀을때
+  saveNoMemoExist() {
+    alert('메모가 없음 메모써라');
+  },
+
+  //메모가 없고 back을 눌렀을때
+  backNoMemoExist() {
+    let noMemoExist = confirm('메모 없음 작성 암함?');
+    switch (noMemoExist) {
+      case true:
+        console.log("yes");
+        displayEl('.noteContent', '');
+        displayEl('.CreateNoteBtn', '');
+        displayEl('.newNoteWrap', 'none');
+        break;
+
+      case false:
+        console.log("no");
+    }
+  }
+}
 
 //노트 로컬 저장, 메모입력칸 초기화, 저장된 데이터 출력
 let localstorageObj = {
   memoObj: {},
 
-  savenNoteData() {
+  saveNoteData() {
     this.memoObj.noteTitle = el('.noteTitle').value
     this.memoObj.noteText = el('.noteText').value
     let saveData = localStorage.setItem(this.memoObj.noteTitle, this.memoObj.noteText);
@@ -169,7 +175,7 @@ let localstorageObj = {
         <button class="del">del</button>
       <div>
       `
-      el('.listWrap').innerHTML += list
+      el('.listWrap').insertAdjacentHTML('afterbegin', list)
     }
     deleteNoList()
   }
@@ -185,6 +191,7 @@ let noteInit = () => {
   NoteAppDom();
   NoteListDom();
   createNoteBtnEvt();
+
 };
 noteInit();
 
@@ -193,9 +200,5 @@ let loadNote = () => {
   writeNewNote();
   // backBtnEvt();
   // saveBtnEvt();
-  btnAllEvt();
+  buttonEvent();
 };
-/*
-메모 리스트에 버튼 이벤트 추가  => 로컬 데이터 지우기
-
-*/
